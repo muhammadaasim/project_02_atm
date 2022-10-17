@@ -1,0 +1,25 @@
+{
+  "name": "project_02_atm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc index.ts && node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muhammadaasim/project_02_atm.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/muhammadaasim/project_02_atm/issues"
+  },
+  "homepage": "https://github.com/muhammadaasim/project_02_atm#readme",
+  "dependencies": {
+    "@types/inquirer": "^8.1.0",
+    "inquirer": "^8.1.0",
+    "typescript": "^4.8.4"
+  }
+}
