@@ -63,17 +63,21 @@ async function Main() {
     },
   ];
 
-  console.log(`Welcome to ATM. \n`);
+  console.log(` Welcome to ATM. \n`);
 
   let userId: string = await Authorization(users);
-  console.log(`\nHello ${userId}!\n`);
+  console.log(
+    `\n Hello ${userId}!\n You've ${
+      transactionList.at(-1)?.closingBalance
+    } PKR Left in Account\n`
+  );
 
   const running: boolean = true;
 
   while (running) {
     const { selectedMenu } = (await prompt({
       name: "selectedMenu",
-      message: "Menu",
+      message: "ATM Menu",
       type: "list",
       choices: [
         "Withdraw",
@@ -96,7 +100,9 @@ async function Main() {
       ? await transaction(transactionList, "Deposit")
       : selectedMenu === "Balance Inquiery"
       ? console.log(
-          `\n # Account Balance: ${transactionList.at(-1)?.closingBalance}\n`
+          `\n # Account Balance: ${
+            transactionList.at(-1)?.closingBalance
+          } PKR \n`
         )
       : selectedMenu === "Statements"
       ? console.table(transactionList)
