@@ -63,7 +63,13 @@ async function Main() {
     },
   ];
 
-  console.log(` Welcome to ATM. \n`);
+  console.log(` Welcome to Console ATM. \n`);
+
+  console.log(
+    `Dummy Account List for Testing App. \n${users.map(
+      (usr) => `UserID : ${usr.userId} \nPIN : ${usr.pin}\n`
+    )}\n`
+  );
 
   let userId: string = await Authorization(users);
   console.log(
@@ -114,7 +120,7 @@ async function Main() {
 
 async function Authorization(users: IUser[]): Promise<string> {
   try {
-    let activeUserId: string;
+    let activeUserId: string = "";
     const { userId, pin } = await prompt([
       {
         name: "userId",
@@ -136,7 +142,7 @@ async function Authorization(users: IUser[]): Promise<string> {
         message: "Enter PIN (4 Digit):",
         type: "password",
         validate: (input) => {
-          let message: string | boolean;
+          let message: string | boolean = false;
           if (isNaN(input) || String(input.trim()).length !== 4) {
             message =
               "Pin must be a 4 Digit Number! Please Re Enter PIN after Prssing Backscape";
@@ -178,7 +184,7 @@ async function transaction(
       return true;
     },
   });
-  const balance: number | undefined = transactionList.at(-1)?.closingBalance;
+  const balance: number = transactionList.at(-1)?.closingBalance || 0;
 
   if (balance !== undefined && type === "Withdraw") {
     if (Number(amount) > balance) console.log("\n# inSufficient balance !\n");
