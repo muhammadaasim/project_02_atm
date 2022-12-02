@@ -36,10 +36,10 @@ figlet.text(
   },
   (error: Error, result: string) => {
     if (error) {
-      console.log(chalk.red(error.message));
+      console.log(chalk.redBright(error.message));
       return;
     }
-    console.log(chalk.blue(result));
+    console.log(chalk.blueBright(result));
   }
 );
 setTimeout(() => {
@@ -51,10 +51,10 @@ setTimeout(() => {
     },
     (error: Error, result: string) => {
       if (error) {
-        console.log(chalk.red(error.message));
+        console.log(chalk.redBright(error.message));
         return;
       }
-      console.log(chalk.blue(result));
+      console.log(chalk.blueBright(result));
       console.log("\n" + chalk.bgGreen("Developed By Aasim PIAIC 112158\n"));
     }
   );
@@ -76,24 +76,10 @@ async function Main(): Promise<void> {
   let transactionList: ITransactionList[] = [
     {
       type: "Deposit",
-      amount: 2000,
-      fees: 0,
-      closingBalance: 2000,
-      date: "10/05/2022, 6:20:01 AM",
-    },
-    {
-      type: "Withdraw",
-      amount: 1000,
-      fees: 1,
-      closingBalance: 999,
-      date: "10/15/2022, 2:20:01 AM",
-    },
-    {
-      type: "Deposit",
-      amount: 5000,
+      amount: 5999,
       fees: 0,
       closingBalance: 5999,
-      date: "10/18/2022, 5:20:01 PM",
+      date: "10/05/2022, 6:20:01 AM",
     },
   ];
 
@@ -298,6 +284,6 @@ async function changePin(users: IUser[], userId: string): Promise<void> {
       },
     ])) as { pin: number };
     users[index] = { ...users[index], pin: pin };
-    console.log(chalk.green(`\n# PIN updated Succesfully\n`));
+    console.log(chalk.greenBright(`\n# PIN updated Succesfully\n`));
   }
 }
