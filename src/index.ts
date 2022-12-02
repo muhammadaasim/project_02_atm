@@ -1,7 +1,7 @@
-import { prompt } from "inquirer";
-
-// Exection of App
-Main();
+#! /usr/bin/env node
+import inquirer from "inquirer";
+import chalk from "chalk";
+import figlet from "figlet";
 
 interface ITransactionList {
   type: "Withdraw" | "Deposit";
@@ -26,7 +26,41 @@ type menuType = {
     | "Logout";
 };
 
-async function Main() {
+const { prompt } = inquirer;
+
+figlet.text(
+  "Welcome to ",
+  {
+    font: "Slant",
+    width: 120,
+  },
+  (error: Error, result: string) => {
+    if (error) {
+      console.log(chalk.red(error.message));
+      return;
+    }
+    console.log(chalk.blue(result));
+  }
+);
+setTimeout(() => {
+  figlet.text(
+    "ATM ! ",
+    {
+      font: "Slant",
+      width: 120,
+    },
+    (error: Error, result: string) => {
+      if (error) {
+        console.log(chalk.red(error.message));
+        return;
+      }
+      console.log(chalk.blue(result));
+      console.log("\n" + chalk.bgGreen("Developed By Aasim PIAIC 112158\n"));
+    }
+  );
+}, 100);
+
+async function Main(): Promise<void> {
   let users: IUser[] = [
     {
       userId: "admin",
@@ -63,19 +97,16 @@ async function Main() {
     },
   ];
 
-  console.log(` Welcome to Console ATM. \n`);
-
-  console.log(
-    `Dummy Account List for Testing App. \n${users.map(
-      (usr) => `UserID : ${usr.userId} \nPIN : ${usr.pin}\n`
-    )}\n`
-  );
+  console.log(`Dummy Account List for Testing App.`);
+  console.table(users);
 
   let userId: string = await Authorization(users);
   console.log(
-    `\n Hello ${userId}!\n You've ${
-      transactionList.at(-1)?.closingBalance
-    } PKR Left in Account\n`
+    chalk.white(
+      `\n# Hello ${chalk.blueBright(userId)}!\n You've ${chalk.redBright(
+        transactionList.at(-1)?.closingBalance + " PKR"
+      )} Left in Account\n`
+    )
   );
 
   const running: boolean = true;
@@ -96,7 +127,18 @@ async function Main() {
     })) as menuType;
 
     if (selectedMenu === "Logout") {
-      console.log(`\nyou've Logged out from ATM\n`);
+      const { exit } = (await prompt({
+        name: "exit",
+        message: "Do you Want to Exit ?",
+        type: "list",
+        choices: ["Yes", "Login Again ?"],
+      })) as { exit: "Yes" | "Login Again ?" };
+
+      if (exit === "Yes") {
+        console.log(chalk.redBright(`\nyou've Exited out from ATM\n`));
+        break;
+      }
+      console.log(chalk.redBright(`\nyou've Logged out from ATM\n`));
       userId = await Authorization(users);
     }
 
@@ -106,9 +148,11 @@ async function Main() {
       ? await transaction(transactionList, "Deposit")
       : selectedMenu === "Balance Inquiery"
       ? console.log(
-          `\n # Account Balance: ${
-            transactionList.at(-1)?.closingBalance
-          } PKR \n`
+          chalk.whiteBright(
+            `\n # Account Balance: ${chalk.redBright(
+              transactionList.at(-1)?.closingBalance + " PKR"
+            )} \n`
+          )
         )
       : selectedMenu === "Statements"
       ? console.table(transactionList)
@@ -118,10 +162,14 @@ async function Main() {
   }
 }
 
+// Exection of App from here.
+setTimeout(() => {
+  Main();
+}, 200);
 async function Authorization(users: IUser[]): Promise<string> {
   try {
     let activeUserId: string = "";
-    const { userId, pin } = await prompt([
+    (await prompt([
       {
         name: "userId",
         message: "Enter UserId:",
@@ -161,7 +209,7 @@ async function Authorization(users: IUser[]): Promise<string> {
           return message;
         },
       },
-    ]);
+    ])) as { userId: string; pin: number };
     return activeUserId;
   } catch (err) {
     console.log(`Error: ${err}`);
@@ -173,7 +221,7 @@ async function transaction(
   transactionList: ITransactionList[],
   type: "Deposit" | "Withdraw"
 ): Promise<void> {
-  const { amount } = await prompt({
+  const { amount } = (await prompt({
     name: "amount",
     message: "Enter Amount to :",
     type: "input",
@@ -183,7 +231,7 @@ async function transaction(
       }
       return true;
     },
-  });
+  })) as { amount: number };
   const balance: number = transactionList.at(-1)?.closingBalance || 0;
 
   if (balance !== undefined && type === "Withdraw") {
@@ -196,7 +244,7 @@ async function transaction(
         closingBalance: balance - Number(amount),
         date: new Date().toLocaleString(),
       });
-      console.log(`\n# Withdrawl Transaction Succesfull\n`);
+      console.log(chalk.greenBright(`\n# Withdrawl Transaction Succesfull\n`));
     }
   } else {
     transactionList.push({
@@ -206,7 +254,7 @@ async function transaction(
       closingBalance: balance + Number(amount),
       date: new Date().toLocaleString(),
     });
-    console.log(`\n# Deposit Transaction Succesfull\n`);
+    console.log(chalk.greenBright(`\n# Deposit Transaction Succesfull\n`));
   }
 }
 
@@ -214,7 +262,7 @@ async function changePin(users: IUser[], userId: string): Promise<void> {
   const index: number = users.findIndex((user) => user.userId === userId);
 
   if (index !== -1) {
-    const { pin } = await prompt([
+    const { pin } = (await prompt([
       {
         name: "oldpin",
         message: "Enter Current PIN (4 Digit):",
@@ -248,8 +296,8 @@ async function changePin(users: IUser[], userId: string): Promise<void> {
           return message;
         },
       },
-    ]);
+    ])) as { pin: number };
     users[index] = { ...users[index], pin: pin };
-    console.log(`\n# PIN updated Succesfully\n`);
+    console.log(chalk.green(`\n# PIN updated Succesfully\n`));
   }
 }

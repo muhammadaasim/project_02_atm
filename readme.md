@@ -1,4 +1,4 @@
-## Welcome to project_08_Quiz_App Repository
+## Welcome to Project Repository
 
 ### Run program by executing the following command
 
